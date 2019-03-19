@@ -1,0 +1,19 @@
+<resources>
+
+    <string name="app_name">Rdt</string>
+    <string name="ok">OK</string>
+
+    <string name="title">Rdt One</string>
+    <string name="x1">1</string>
+    <string name="x2">2</string>
+    <string name="x3">3</string>
+
+    <string name="permissionTitle">Permission required</string>
+    <string name="permissionMessage">Please enable the permission that is needed in this application</string>
+    <string name="permissionDenied">Permission always denied</string>
+
+    <string name="pairedTitle">Paired Devices</string>
+    <string name="newTitle">New Devices</string>
+    <string name="scan">Scan</string>
+
+</resources>
