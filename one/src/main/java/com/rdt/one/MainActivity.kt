@@ -10,6 +10,10 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.IBinder
 import android.os.Message
+import android.text.Editable
+import android.text.TextWatcher
+import android.text.method.ScrollingMovementMethod
+import com.rdt.one.MyUtil.Companion.showLog
 import com.rdt.one.MyUtil.Companion.showToast
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -28,6 +32,8 @@ class MainActivity : PermissionActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        initTextInOut()
         mMainHandler = MainHandler()
         setupService()
         setupControlInterface()
@@ -54,9 +60,12 @@ class MainActivity : PermissionActivity() {
                 }
             }
             RequestCode.CONNECT_DEVICE.i -> {
+                showLog(TAG, "----2222----")
                 if (resultCode == Activity.RESULT_OK) {
+                    showLog(TAG, "----3333----")
                     val address = data?.extras?.getString(BTKey.DEVICE_ADDRESS.s)
                     if (address != null) {
+                        appendStatus(address)
                         mService.connectDevice(address)
                     }
                 }
@@ -84,6 +93,28 @@ class MainActivity : PermissionActivity() {
     }
 
     //
+    // EDIT WATCHER
+    //
+    private val mEditWatcher = object : TextWatcher {
+
+        override fun afterTextChanged(s: Editable?) {
+            val str = s.toString()
+            if (str.isNotEmpty()) {
+                mService.sendData(str.toByteArray())
+            }
+        }
+
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            //
+        }
+
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            //
+        }
+
+    }
+
+    //
     // PRIVATE FUN
     //
     private fun setupControlInterface() {
@@ -91,15 +122,18 @@ class MainActivity : PermissionActivity() {
             finish()
         }
         x1.setOnClickListener {
-            showToast("x1 scan")
+            showToast("x1")
             scanBluetooth()
         }
         x2.setOnClickListener {
-            showToast("x2 make discoverable")
-            makeBluetoothDiscoverable()
+            showToast("x2")
+            val str = xCmd.text.toString()
+            if (str.isNotEmpty()) {
+                mService.sendData(str.toByteArray())
+            }
         }
         x3.setOnClickListener {
-            showToast("x3 pressed")
+            showToast("x3")
         }
     }
 
@@ -125,6 +159,32 @@ class MainActivity : PermissionActivity() {
         }
     }
 
+    private fun initTextInOut() {
+        xStatus.movementMethod = ScrollingMovementMethod()
+        xStatus.setHorizontallyScrolling(true)
+        // xCmd.addTextChangedListener(mEditWatcher)
+    }
+
+    private fun appendStatus(str: String) {
+        xStatus.append(str + "\n")
+        /*
+        xStatus.post {
+            val scroll = xStatus.layout.getLineTop(xStatus.lineCount) - xStatus.height
+            if (scroll > 0) {
+                xStatus.scrollTo(0, scroll)
+            }
+        }
+        */
+        /**/
+        xStatus.post {
+            val scroll = xStatus.layout.getLineBottom(xStatus.lineCount - 1) - xStatus.scrollY - xStatus.height
+            if (scroll > 0) {
+                xStatus.scrollBy(0, scroll)
+            }
+        }
+        /**/
+    }
+
     //
     // HANDLER
     //
@@ -133,21 +193,22 @@ class MainActivity : PermissionActivity() {
         override fun handleMessage(msg: Message?) {
             when (msg?.what) {
                 BTState.NONE.i -> {
-                    xStatus.append("initialized")
+                    appendStatus("initialized")
                 }
                 BTState.LISTEN.i -> {
-                    xStatus.append("listen")
+                    appendStatus("listen")
                 }
                 BTState.CONNECT.i -> {
-                    xStatus.append("connecting")
+                    appendStatus("connecting")
                 }
                 BTState.CHAT.i -> {
-                    xStatus.append("chat")
+                    appendStatus("chat")
                 }
                 BTState.CHAT_DATA.i -> {
-                    xStatus.append("chat data")
+                    // appendStatus("chat data")
                     if (msg.obj != null) {
-                        xStatus.append(msg.obj as String)
+                        val str = msg.obj as String
+                        xStatus.append(str)
                     }
                 }
             }

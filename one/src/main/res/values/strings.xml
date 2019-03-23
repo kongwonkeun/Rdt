@@ -4,8 +4,9 @@
     <string name="ok">OK</string>
 
     <string name="title">Rdt One</string>
-    <string name="x1">1</string>
-    <string name="x2">2</string>
+    <string name="hint">Type Command</string>
+    <string name="x1">connect</string>
+    <string name="x2">send</string>
     <string name="x3">3</string>
 
     <string name="permissionTitle">Permission required</string>

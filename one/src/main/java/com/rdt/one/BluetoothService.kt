@@ -15,8 +15,10 @@ import com.rdt.one.MyConfig.Companion.TALK_NONE
 import com.rdt.one.MyConfig.Companion.TALK_PREFIX
 import com.rdt.one.MyConfig.Companion.TALK_SUFFIX
 import com.rdt.one.MyConfig.Companion.TALK_TALK
+import com.rdt.one.MyConfig.Companion.getConnectedDeviceInfo
 import com.rdt.one.MyConfig.Companion.myConnectedDeviceAddress
 import com.rdt.one.MyConfig.Companion.myConnectedDeviceName
+import com.rdt.one.MyConfig.Companion.setConnectedDeviceInfo
 import com.rdt.one.MyUtil.Companion.showToast
 import java.lang.StringBuilder
 
@@ -38,7 +40,7 @@ class BluetoothService : Service() {
 
     override fun onCreate() {
         super.onCreate()
-        startMonitor(applicationContext)
+        // startMonitor(applicationContext)
         mParser = MessageParser()
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
         if (!mBluetoothAdapter.isEnabled) {
@@ -75,6 +77,7 @@ class BluetoothService : Service() {
     fun setup(handler: Handler) {
         mMainHandler = handler
         setupBluetooth()
+        getConnectedDeviceInfo()
         if (myConnectedDeviceAddress != null && myConnectedDeviceName != null) {
             connectDevice(myConnectedDeviceAddress!!)
         } else {
@@ -87,6 +90,12 @@ class BluetoothService : Service() {
     fun kill() {
         if (mBluetoothManager != null) {
             mBluetoothManager!!.stop()
+        }
+    }
+
+    fun sendData(buf: ByteArray) {
+        if (mBluetoothManager != null) {
+            mBluetoothManager!!.send(buf)
         }
     }
 
@@ -155,6 +164,7 @@ class BluetoothService : Service() {
                     if (address != null && name !== null) {
                         myConnectedDeviceAddress = address
                         myConnectedDeviceName = name
+                        setConnectedDeviceInfo()
                         showToast(String.format("connected to %s", name))
                     }
                 }

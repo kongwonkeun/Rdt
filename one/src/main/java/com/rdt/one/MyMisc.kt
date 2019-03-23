@@ -27,6 +27,7 @@ enum class BTMessage(val i: Int) {
 
 // Bluetooth Message Key
 enum class BTKey(val s: String) {
+    DEVICE_INFO("device_info"),
     DEVICE_NAME("device_name"),
     DEVICE_ADDRESS("device_address"),
     TOAST("toast")

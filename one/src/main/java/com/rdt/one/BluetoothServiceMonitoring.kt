@@ -15,6 +15,7 @@ class BluetoothServiceMonitoring {
 
     companion object {
 
+        @Suppress("DEPRECATION")
         private fun isServiceAlive(context: Context, clazz: Class<*>): Boolean {
             val activityManager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
             val runningServices = activityManager.getRunningServices(Int.MAX_VALUE)

@@ -13,6 +13,7 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.TextView
+import com.rdt.one.MyUtil.Companion.showLog
 import kotlinx.android.synthetic.main.activity_connection.*
 
 class ConnectionActivity : PermissionActivity() {
@@ -36,10 +37,10 @@ class ConnectionActivity : PermissionActivity() {
 
         mPairedDeviceAdapter = ArrayAdapter(this, R.layout.adapter_device)
         xPairedList.adapter = mPairedDeviceAdapter
-        xPairedList.onItemClickListener = mItemClickListener
+        xPairedList.setOnItemClickListener(mItemClickListener)
         mNewDeviceAdapter = ArrayAdapter(this, R.layout.adapter_device)
         xNewList.adapter = mNewDeviceAdapter
-        xNewList.onItemClickListener = mItemClickListener
+        xNewList.setOnItemClickListener(mItemClickListener)
 
         var filter = IntentFilter(BluetoothDevice.ACTION_FOUND)
         this.registerReceiver(mReceiver, filter)
@@ -88,8 +89,8 @@ class ConnectionActivity : PermissionActivity() {
     //
     // LISTENER FOR CLICK
     //
+    /*
     private val mItemClickListener = object : AdapterView.OnItemClickListener {
-
         override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
             mAdapter.cancelDiscovery()
             val info = (view as TextView).text.toString()
@@ -101,7 +102,21 @@ class ConnectionActivity : PermissionActivity() {
                 finish()
             }
         }
-
+    }
+    convert to lambda expression */
+    private val mItemClickListener = {
+        _: AdapterView<*>?, view: View?, _: Int, _: Long ->
+        mAdapter.cancelDiscovery()
+        val info = (view as TextView).text.toString()
+        if (info.length > 16)
+        {
+            showLog(TAG, "----1111----")
+            val address = info.substring(info.length - 17)
+            val intent = Intent()
+            intent.putExtra(BTKey.DEVICE_ADDRESS.s, address)
+            setResult(Activity.RESULT_OK, intent)
+            finish()
+        }
     }
 
     //

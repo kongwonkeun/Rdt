@@ -24,7 +24,7 @@ tools:context=".MainActivity">
         android:text="@string/title"
         android:textSize="36sp"
         android:textStyle="bold"
-        android:gravity="right"/>
+        android:gravity="end"/>
 
     </LinearLayout>
 
@@ -45,7 +45,15 @@ tools:context=".MainActivity">
 
         <TextView
         android:id="@+id/xStatus"
-        grid:layout_gravity="right"
+        grid:layout_gravity="start"
+        grid:layout_columnSpan="3"
+        android:layout_height="300dp"/>
+
+        <EditText
+        android:id="@+id/xCmd"
+        android:inputType="text"
+        android:hint="@string/hint"
+        grid:layout_gravity="start"
         grid:layout_columnSpan="3"
         grid:layout_rowWeight="1"/>
 

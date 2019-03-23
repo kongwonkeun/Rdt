@@ -6,6 +6,7 @@ import android.bluetooth.BluetoothServerSocket
 import android.bluetooth.BluetoothSocket
 import android.os.Bundle
 import android.util.Log
+import com.rdt.one.MyConfig.Companion.SERIAL_PORT_SERVICE_CLASS_UUID
 import com.rdt.one.MyConfig.Companion.myConnectedDeviceAddress
 import java.io.IOException
 import java.io.InputStream
@@ -15,12 +16,9 @@ import java.util.*
 class BluetoothManager(private val mBTHandler: android.os.Handler) {
 
     private val TAG = "BluetoothManager"
-    private val SERIAL_PORT_SERVICE_CLASS_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB")
-    private val MY_DEVICE_NAME = "RDTONE"
     private val mAdapter = BluetoothAdapter.getDefaultAdapter()
     private var mState = BTState.NONE
     private var mStopped = false
-
     private var mAcceptThread: AcceptThread? = null
     private var mConnectThread: ConnectThread? = null
     private var mChatThread: ChatThread? = null
@@ -142,7 +140,7 @@ class BluetoothManager(private val mBTHandler: android.os.Handler) {
         private lateinit var uSocket: BluetoothSocket
         init {
             try {
-                uSeverSocket = mAdapter.listenUsingRfcommWithServiceRecord(MY_DEVICE_NAME, SERIAL_PORT_SERVICE_CLASS_UUID)
+                uSeverSocket = mAdapter.listenUsingRfcommWithServiceRecord(MyConfig.MY_DEVICE_NAME, MyConfig.SERIAL_PORT_SERVICE_CLASS_UUID)
             } catch (e: IOException) {
                 Log.e(TAG,"server socket listening failed")
             }
